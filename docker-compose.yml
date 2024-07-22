@@ -1,0 +1,32 @@
+services:
+  laravel:
+    build:
+      context: .
+      dockerfile: ./container/laravel/Dockerfile
+    volumes:
+      - ../project/:/usr/home/clair/project
+  nginx:
+    build:
+      context: .
+      dockerfile: ./container/nginx/Dockerfile
+    ports:
+      - 8080:80
+      - 8081:81
+    depends_on:
+      - laravel
+    volumes:
+      - ../project/:/usr/home/clair/project
+  db:
+    build: 
+      context: .
+      dockerfile: ./container/db/Dockerfile
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'master'
+    volumes:
+      - chatbot-postgres-volume:/var/lib/postgresql/data
+volumes:
+  chatbot-postgres-volume:
